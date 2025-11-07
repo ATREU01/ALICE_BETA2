@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALICE Oracle - Universal 10-Layer Analysis</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #0ff;
+            font-family: 'Space Mono', monospace;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* ROTATING RECTANGLES BACKGROUND */
+        .rotating-rectangles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .rectangle {
+            position: absolute;
+            border: 2px solid;
+            animation: rotate 20s linear infinite;
+        }
+        
+        .rectangle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            border-color: #0ff;
+            animation-duration: 25s;
+            opacity: 0.3;
+        }
+        
+        .rectangle:nth-child(2) {
+            width: 400px;
+            height: 250px;
+            top: 50%;
+            right: 15%;
+            border-color: #f0f;
+            animation-duration: 30s;
+            animation-direction: reverse;
+            opacity: 0.3;
+        }
+        
+        .rectangle:nth-child(3) {
+            width: 350px;
+            height: 350px;
+            bottom: 10%;
+            left: 20%;
+            border-color: #ff0;
+            animation-duration: 35s;
+            opacity: 0.2;
+        }
+        
+        .rectangle:nth-child(4) {
+            width: 280px;
+            height: 280px;
+            top: 30%;
+            right: 30%;
+            border-color: #0f0;
+            animation-duration: 28s;
+            animation-direction: reverse;
+            opacity: 0.25;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* GRID FLOOR */
+        .grid-floor {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60vh;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 0, 110, 0.5) 0px,
+                    rgba(255, 0, 110, 0.5) 2px,
+                    transparent 2px,
+                    transparent 50px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(0, 255, 255, 0.3) 0px,
+                    rgba(0, 255, 255, 0.3) 2px,
+                    transparent 2px,
+                    transparent 50px
+                );
+            transform: perspective(600px) rotateX(60deg);
+            transform-origin: bottom center;
+            z-index: 1;
+            pointer-events: none;
+            animation: grid-move 25s linear infinite;
+        }
+        
+        @keyframes grid-move {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 0 50px, 0 0; }
+        }
+        
+        /* SCANLINE */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.08),
+                rgba(0, 0, 0, 0.08) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        /* CONTENT */
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 120px;
+            font-weight: 900;
+            color: #0ff;
+            text-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.8),
+                0 0 40px rgba(0, 255, 255, 0.5),
+                0 0 60px rgba(0, 255, 255, 0.3);
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            color: #f0f;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+        }
+        
+        .tagline {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 60px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        /* ACCESS GATE */
+        .access-gate {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #0ff;
+            border-radius: 15px;
+            padding: 50px 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
+        }
+        
+        .gate-title {
+            font-size: 28px;
+            color: #0ff;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+        
+        .gate-input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 18px;
+            background: #111;
+            border: 2px solid #0ff;
+            color: #0ff;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .gate-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        }
+        
+        .gate-button {
+            width: 100%;
+            padding: 18px 40px;
+            font-size: 20px;
+            background: #0ff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            border-radius: 8px;
+            transition: all 0.3s;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        
+        .gate-button:hover {
+            background: #0aa;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+        
+        .gate-button:disabled {
+            background: #333;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .error-msg {
+            color: #f00;
+            font-size: 14px;
+            margin-top: 15px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
+        
+        .success-msg {
+            color: #0f0;
+            font-size: 14px;
+            margin-top: 15px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+        }
+        
+        /* FEATURES */
+        .features {
+            margin-top: 80px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .feature {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid #0ff;
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            color: #0ff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .logo { font-size: 72px; }
+            .subtitle { font-size: 20px; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ANIMATED BACKGROUND -->
+    <div class="rotating-rectangles">
+        <div class="rectangle"></div>
+        <div class="rectangle"></div>
+        <div class="rectangle"></div>
+        <div class="rectangle"></div>
+    </div>
+    
+    <div class="grid-floor"></div>
+    <div class="scanline"></div>
+    
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div class="logo">ALICE</div>
+        <div class="subtitle">UNIVERSAL ORACLE</div>
+        <div class="tagline">
+            Advanced 10-layer analysis engine combining technical indicators, 
+            cosmic data, and predictive archetypes to reveal market truth.
+        </div>
+        
+        <!-- ACCESS GATE -->
+        <div class="access-gate">
+            <div class="gate-title">Enter Access Code</div>
+            <input 
+                type="text" 
+                id="accessCode" 
+                class="gate-input" 
+                placeholder="ALICE2025"
+                maxlength="20"
+            >
+            <button id="enterBtn" class="gate-button">ENTER ORACLE</button>
+            <div id="message"></div>
+        </div>
+        
+        <!-- FEATURES -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔮</div>
+                <div class="feature-title">10-Layer Analysis</div>
+                <div class="feature-desc">
+                    Linguistics, Technical, Momentum, Sentiment, Liquidity, 
+                    Whale, Order Book, Cosmic, Risk, Integration
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🌙</div>
+                <div class="feature-title">Lunar Tracking</div>
+                <div class="feature-desc">
+                    Real-time moon phase calculations affecting market 
+                    psychology and trading patterns
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Space Weather</div>
+                <div class="feature-desc">
+                    Live Kp index monitoring for geomagnetic activity 
+                    correlation with volatility
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🎭</div>
+                <div class="feature-title">Clif High Archetypes</div>
+                <div class="feature-desc">
+                    Prophet, Seer, Trickster, Observer, Guardian, Shadow, 
+                    Echo, Cultist classification
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const accessCode = document.getElementById('accessCode');
+        const enterBtn = document.getElementById('enterBtn');
+        const message = document.getElementById('message');
+        
+        // Enter key support
+        accessCode.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                enterBtn.click();
+            }
+        });
+        
+        enterBtn.addEventListener('click', async () => {
+            const code = accessCode.value.trim().toUpperCase();
+            
+            if (!code) {
+                message.className = 'error-msg';
+                message.textContent = '⚠️ Please enter an access code';
+                return;
+            }
+            
+            enterBtn.disabled = true;
+            enterBtn.textContent = 'VALIDATING...';
+            message.textContent = '';
+            
+            try {
+                const response = await fetch('/api/validate-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                
+                const result = await response.json();
+                
+                if (result.valid) {
+                    message.className = 'success-msg';
+                    message.textContent = '✅ ACCESS GRANTED';
+                    
+                    // Save session
+                    sessionStorage.setItem('aliceAccess', 'granted');
+                    
+                    // Redirect to scanner
+                    setTimeout(() => {
+                        window.location.href = '/scanner.html';
+                    }, 1000);
+                } else {
+                    message.className = 'error-msg';
+                    message.textContent = `❌ ${result.message}`;
+                    enterBtn.disabled = false;
+                    enterBtn.textContent = 'ENTER ORACLE';
+                }
+            } catch (error) {
+                message.className = 'error-msg';
+                message.textContent = '❌ Connection error. Try again.';
+                enterBtn.disabled = false;
+                enterBtn.textContent = 'ENTER ORACLE';
+            }
+        });
+    </script>
+</body>
+</html>
