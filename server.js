@@ -160,8 +160,8 @@ function calculateRSI(prices, period = 14) {
 
 function getMoonPhase() {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
+    let year = now.getFullYear();
+    let month = now.getMonth() + 1;
     const day = now.getDate();
     
     let c = 0, e = 0, jd = 0, b = 0;
