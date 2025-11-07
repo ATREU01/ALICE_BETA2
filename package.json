@@ -1,10 +1,10 @@
 {
   "name": "alice-oracle-smallcaps",
   "version": "1.0.0",
-  "description": "ALICE ORACLE — small-cap SOL scanner + 10-layer engine",
-  "main": "index.js",
+  "description": "ALICE ORACLE — Small-Caps SOL Scanner + 10-Layer Engine",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "engines": { "node": ">=18" }
 }
