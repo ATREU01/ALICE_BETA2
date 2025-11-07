@@ -17,7 +17,106 @@
             min-height: 100vh;
         }
         
-        /* HEADER */
+        /* ROTATING SHAPES BACKGROUND */
+        .rotating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            animation: rotate 20s linear infinite;
+        }
+        
+        /* SUN */
+        .shape:nth-child(1) {
+            width: 180px;
+            height: 180px;
+            top: 12%;
+            left: 8%;
+            background: radial-gradient(circle, #ff0000, #ff6600, #ffaa00);
+            border-radius: 50%;
+            animation-duration: 30s;
+            opacity: 0.35;
+            box-shadow: 0 0 80px rgba(255, 100, 0, 0.5);
+        }
+        
+        /* MOON */
+        .shape:nth-child(2) {
+            width: 160px;
+            height: 160px;
+            top: 55%;
+            right: 10%;
+            background: radial-gradient(circle at 30% 30%, #ffff00, #00ff00, #00ffaa);
+            border-radius: 50%;
+            animation-duration: 35s;
+            animation-direction: reverse;
+            opacity: 0.35;
+            box-shadow: 0 0 60px rgba(0, 255, 200, 0.4);
+        }
+        
+        /* STAR 1 */
+        .shape:nth-child(3) {
+            width: 0;
+            height: 0;
+            bottom: 25%;
+            left: 22%;
+            border-left: 45px solid transparent;
+            border-right: 45px solid transparent;
+            border-bottom: 78px solid #00ffff;
+            animation-duration: 25s;
+            opacity: 0.3;
+            filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.5));
+        }
+        
+        .shape:nth-child(3)::before {
+            content: '';
+            position: absolute;
+            top: 27px;
+            left: -45px;
+            width: 0;
+            height: 0;
+            border-left: 45px solid transparent;
+            border-right: 45px solid transparent;
+            border-top: 78px solid #0088ff;
+        }
+        
+        /* STAR 2 */
+        .shape:nth-child(4) {
+            width: 0;
+            height: 0;
+            top: 32%;
+            right: 32%;
+            border-left: 38px solid transparent;
+            border-right: 38px solid transparent;
+            border-bottom: 66px solid #8800ff;
+            animation-duration: 28s;
+            animation-direction: reverse;
+            opacity: 0.3;
+            filter: drop-shadow(0 0 40px rgba(150, 0, 255, 0.5));
+        }
+        
+        .shape:nth-child(4)::before {
+            content: '';
+            position: absolute;
+            top: 22px;
+            left: -38px;
+            width: 0;
+            height: 0;
+            border-left: 38px solid transparent;
+            border-right: 38px solid transparent;
+            border-top: 66px solid #ff00ff;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         .header {
             text-align: center;
             padding: 40px 20px;
@@ -29,12 +128,70 @@
             z-index: 1000;
         }
         
+        /* GLITCH TITLE */
         .main-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 56px;
+            font-weight: 900;
+            font-size: clamp(40px, 10vw, 56px);
             color: #0ff;
-            text-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 
+                0 0 10px rgba(0, 255, 255, 0.8),
+                0 0 20px rgba(0, 255, 255, 0.6),
+                0 0 30px rgba(0, 255, 255, 0.4);
+            animation: glitch-skew 3s ease-in-out infinite;
+            letter-spacing: 0.05em;
             margin-bottom: 15px;
+        }
+        
+        .main-title::before,
+        .main-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .main-title::before {
+            left: 2px;
+            text-shadow: -2px 0 #f0f;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .main-title::after {
+            left: -2px;
+            text-shadow: -2px 0 #ff0;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 4s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(50px, 9999px, 20px, 0); }
+            40% { clip: rect(25px, 9999px, 87px, 0); }
+            60% { clip: rect(40px, 9999px, 61px, 0); }
+            80% { clip: rect(5px, 9999px, 102px, 0); }
+            100% { clip: rect(68px, 9999px, 41px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 99px, 0); }
+            20% { clip: rect(75px, 9999px, 30px, 0); }
+            40% { clip: rect(28px, 9999px, 72px, 0); }
+            60% { clip: rect(80px, 9999px, 25px, 0); }
+            80% { clip: rect(33px, 9999px, 70px, 0); }
+            100% { clip: rect(85px, 9999px, 28px, 0); }
+        }
+        
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            2% { transform: skew(-1.5deg); }
+            4% { transform: skew(1.5deg); }
+            100% { transform: skew(0deg); }
         }
         
         .subtitle {
@@ -371,9 +528,17 @@
     </style>
 </head>
 <body>
+    <!-- Rotating Shapes Background -->
+    <div class="rotating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
     <!-- HEADER -->
     <div class="header">
-        <div class="main-title">ALICE SCANNER</div>
+        <div class="main-title" data-text="ALICE SCANNER">ALICE SCANNER</div>
         <div class="subtitle">10-LAYER UNIVERSAL ORACLE</div>
         
         <div class="status-bar">
@@ -398,7 +563,7 @@
     
     <!-- CONTROLS -->
     <div class="controls">
-        <button id="scanBtn" class="scan-btn">🔮 SCAN NOW</button>
+        <button id="scanBtn" class="scan-btn">SCAN NOW</button>
     </div>
     
     <!-- TOKEN GRID -->
@@ -526,12 +691,12 @@
             
             isScanning = true;
             scanBtn.classList.add('scanning');
-            scanBtn.textContent = '⏳ SCANNING...';
+            scanBtn.textContent = 'SCANNING...';
             tokenGrid.innerHTML = '';
             loading.style.display = 'block';
             
             try {
-                const response = await fetch('/api/analyze');
+                const response = await fetch('https://alicebeta2-production.up.railway.app/api/analyze');
                 const data = await response.json();
                 
                 // Update cosmic data
@@ -557,7 +722,7 @@
             
             isScanning = false;
             scanBtn.classList.remove('scanning');
-            scanBtn.textContent = '🔮 SCAN NOW';
+            scanBtn.textContent = 'SCAN NOW';
         }
         
         // Event listeners
