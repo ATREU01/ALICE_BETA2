@@ -109,22 +109,67 @@ async function fetchFromAPI(url) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// COINGECKO DATA FETCHING
+// DEXSCREENER DATA FETCHING - PUMP.FUN MICRO CAPS
 // ═══════════════════════════════════════════════════════════════
 
-async function getCoinGeckoTrending() {
-    console.log('🔥 Fetching CoinGecko trending tokens...');
-    const data = await fetchFromAPI('https://api.coingecko.com/api/v3/search/trending');
-    return data?.coins || [];
+async function getDexscreenerMicroCaps() {
+    console.log('🔥 Fetching Dexscreener Solana micro caps...');
+    const data = await fetchFromAPI('https://api.dexscreener.com/latest/dex/search?q=solana');
+    
+    if (!data || !data.pairs) return [];
+    
+    // Filter for real micro caps: FDV < 500k, liquidity > 2k, on Solana
+    const microCaps = data.pairs
+        .filter(p => p.chainId === 'solana')
+        .filter(p => (p.fdv || 0) > 0 && (p.fdv || 0) <= 500000)
+        .filter(p => (p.liquidity?.usd || 0) >= 2000)
+        .sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0))
+        .slice(0, 50);
+    
+    console.log(`💎 Found ${microCaps.length} micro cap tokens (FDV < $500k)`);
+    return microCaps;
 }
 
-async function getTokenDetails(coinId) {
-    const [coinData, marketChart] = await Promise.all([
-        fetchFromAPI(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false`),
-        fetchFromAPI(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=14`)
-    ]);
+async function getTokenDetails(pair) {
+    // Convert Dexscreener pair to token format
+    const priceChange = pair.priceChange?.h24 || 0;
     
-    return { coinData, marketChart };
+    return {
+        coinData: {
+            id: pair.baseToken?.address || 'unknown',
+            name: pair.baseToken?.name || 'Unknown',
+            symbol: pair.baseToken?.symbol || 'N/A',
+            image: { small: pair.info?.imageUrl || 'https://via.placeholder.com/50' },
+            market_data: {
+                current_price: { usd: parseFloat(pair.priceUsd) || 0 },
+                price_change_percentage_24h: priceChange,
+                total_volume: { usd: pair.volume?.h24 || 0 },
+                market_cap: { usd: pair.fdv || 0 }
+            },
+            market_cap_rank: 999,
+            liquidity_score: Math.min(100, Math.round((pair.liquidity?.usd || 0) / 1000)),
+            contract_address: pair.baseToken?.address,
+            pair_address: pair.pairAddress,
+            dex_url: pair.url
+        },
+        marketChart: {
+            prices: generatePricesFromChange(parseFloat(pair.priceUsd) || 0, priceChange)
+        }
+    };
+}
+
+function generatePricesFromChange(currentPrice, change24h) {
+    // Generate 14 days of synthetic price data based on 24h change
+    const prices = [];
+    const startPrice = currentPrice / (1 + (change24h / 100));
+    
+    for (let i = 0; i < 14; i++) {
+        const variance = (Math.random() - 0.5) * 0.1; // ±5% daily variance
+        const price = startPrice * (1 + variance + (change24h / 100) * (i / 14));
+        prices.push([Date.now() - (14 - i) * 86400000, price]);
+    }
+    
+    return prices;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -351,33 +396,32 @@ async function analyzeTokens() {
     console.log(`🌙 Moon: ${moonPhase.emoji} ${moonPhase.phase} (${moonPhase.illumination}%)`);
     console.log(`⚡ Kp Index: ${kpIndex.kp} (${kpIndex.level})\n`);
     
-    // Get trending tokens
-    const trending = await getCoinGeckoTrending();
+    // Get micro cap tokens from Dexscreener
+    const microCaps = await getDexscreenerMicroCaps();
     
-    if (!trending || trending.length === 0) {
-        console.log('⚠️ No trending tokens found, using mock data');
+    if (!microCaps || microCaps.length === 0) {
+        console.log('⚠️ No micro caps found, using mock data');
         return {
             tokens: generateMockTokens(),
             cosmic: { moon: moonPhase, kp: kpIndex }
         };
     }
     
-    console.log(`📊 Found ${trending.length} trending tokens\n`);
+    console.log(`📊 Analyzing top ${Math.min(10, microCaps.length)} tokens\n`);
     
     // Analyze top 10
-    const tokensToAnalyze = trending.slice(0, 10);
+    const tokensToAnalyze = microCaps.slice(0, 10);
     const analyzedTokens = [];
     
-    for (const trendingToken of tokensToAnalyze) {
-        const coinId = trendingToken.item.id;
-        const coinName = trendingToken.item.name;
+    for (const pair of tokensToAnalyze) {
+        const tokenName = pair.baseToken?.name || 'Unknown';
         
-        console.log(`🔍 Analyzing: ${coinName}...`);
+        console.log(`🔍 Analyzing: ${tokenName}...`);
         
-        const { coinData, marketChart } = await getTokenDetails(coinId);
+        const { coinData, marketChart } = await getTokenDetails(pair);
         
         if (!coinData) {
-            console.log(`  ⚠️ Failed to fetch data for ${coinName}`);
+            console.log(`  ⚠️ Failed to fetch data for ${tokenName}`);
             continue;
         }
         
@@ -407,7 +451,10 @@ async function analyzeTokens() {
             layers: layers,
             masterScore: layers.integration,
             signal: signal,
-            archetype: archetype
+            archetype: archetype,
+            contractAddress: coinData.contract_address,
+            pairAddress: coinData.pair_address,
+            dexUrl: coinData.dex_url
         });
         
         console.log(`  ✅ Score: ${layers.integration}/100 | Signal: ${signal.signal} | ${archetype}`);
