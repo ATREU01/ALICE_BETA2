@@ -1,16 +1,19 @@
 {
   "name": "alice-oracle",
   "version": "2.0.0",
-  "description": "ALICE - Universal 10-Layer Oracle Analysis Engine",
+  "description": "ALICE - Pump.fun Micro Cap Scanner",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "NODE_ENV=development node server.js"
   },
-  "keywords": ["oracle", "crypto", "analysis", "alice"],
+  "keywords": ["pump.fun", "solana", "crypto", "alice"],
   "author": "ALICE Oracle",
-  "license": "MIT",
+  "license": "atr3u",
   "engines": {
     "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
   }
 }
