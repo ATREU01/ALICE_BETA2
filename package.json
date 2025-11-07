@@ -1,0 +1,16 @@
+{
+  "name": "alice-oracle",
+  "version": "2.0.0",
+  "description": "ALICE - Universal 10-Layer Oracle Analysis Engine",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js"
+  },
+  "keywords": ["oracle", "crypto", "analysis", "alice"],
+  "author": "ALICE Oracle",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
