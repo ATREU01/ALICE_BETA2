@@ -1,0 +1,11 @@
+{
+  "name": "alice-oracle-ultra",
+  "version": "1.0.0",
+  "description": "ALICE — Billion-grade Small-Caps Oracle (gate + cosmic + scoring + cache + retries)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {}
+}
