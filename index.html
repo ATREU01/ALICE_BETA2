@@ -3,80 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALICE Oracle - Solana Micro Cap Scanner</title>
+    <title>ALICE ORACLE - Pump.fun Scanner</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body {
-            background: #000;
-            color: #0ff;
-            font-family: 'Space Mono', monospace;
-            overflow-x: hidden;
+        body { 
+            background: #000; 
+            color: #0ff; 
+            font-family: 'Space Mono', monospace; 
+            overflow-x: hidden; 
+            min-height: 100vh; 
         }
         
         /* ROTATING RECTANGLES BACKGROUND */
         .rotating-rectangles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
         }
         
         .rectangle {
-            position: absolute;
-            border: 2px solid;
-            animation: rotate 20s linear infinite;
+            position: absolute; border: 2px solid; animation: rotate 20s linear infinite;
         }
         
         .rectangle:nth-child(1) {
-            width: 300px;
-            height: 300px;
-            top: 10%;
-            left: 10%;
-            border-color: #0ff;
-            animation-duration: 25s;
-            opacity: 0.3;
+            width: 300px; height: 300px; top: 10%; left: 10%; border-color: #0ff;
+            animation-duration: 25s; opacity: 0.3;
         }
         
         .rectangle:nth-child(2) {
-            width: 400px;
-            height: 250px;
-            top: 50%;
-            right: 15%;
-            border-color: #f0f;
-            animation-duration: 30s;
-            animation-direction: reverse;
-            opacity: 0.3;
+            width: 400px; height: 250px; top: 50%; right: 15%; border-color: #f0f;
+            animation-duration: 30s; animation-direction: reverse; opacity: 0.3;
         }
         
         .rectangle:nth-child(3) {
-            width: 350px;
-            height: 350px;
-            bottom: 10%;
-            left: 20%;
-            border-color: #ff0;
-            animation-duration: 35s;
-            opacity: 0.2;
+            width: 350px; height: 350px; bottom: 10%; left: 20%; border-color: #ff0;
+            animation-duration: 35s; opacity: 0.2;
         }
         
         .rectangle:nth-child(4) {
-            width: 280px;
-            height: 280px;
-            top: 30%;
-            right: 30%;
-            border-color: #0f0;
-            animation-duration: 28s;
-            animation-direction: reverse;
-            opacity: 0.25;
+            width: 280px; height: 280px; top: 30%; right: 30%; border-color: #0f0;
+            animation-duration: 28s; animation-direction: reverse; opacity: 0.25;
         }
         
         @keyframes rotate {
@@ -86,30 +53,12 @@
         
         /* GRID FLOOR */
         .grid-floor {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 60vh;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60vh;
             background: 
-                repeating-linear-gradient(
-                    0deg,
-                    rgba(255, 0, 110, 0.5) 0px,
-                    rgba(255, 0, 110, 0.5) 2px,
-                    transparent 2px,
-                    transparent 50px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    rgba(0, 255, 255, 0.3) 0px,
-                    rgba(0, 255, 255, 0.3) 2px,
-                    transparent 2px,
-                    transparent 50px
-                );
+                repeating-linear-gradient(0deg, rgba(255, 0, 110, 0.5) 0px, rgba(255, 0, 110, 0.5) 2px, transparent 2px, transparent 50px),
+                repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.3) 0px, rgba(0, 255, 255, 0.3) 2px, transparent 2px, transparent 50px);
             transform: perspective(600px) rotateX(60deg);
-            transform-origin: bottom center;
-            z-index: 1;
-            pointer-events: none;
+            transform-origin: bottom center; z-index: 1; pointer-events: none;
             animation: grid-move 25s linear infinite;
         }
         
@@ -120,73 +69,40 @@
         
         /* SCANLINE */
         .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.08),
-                rgba(0, 0, 0, 0.08) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            z-index: 9999;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08) 1px, transparent 1px, transparent 2px);
+            z-index: 9999; pointer-events: none;
         }
         
-        /* CONTENT */
-        .container {
-            position: relative;
-            z-index: 10;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 40px 20px;
+        /* MAIN SCANNER */
+        .scanner-container {
+            padding: 20px; position: relative; z-index: 100; min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center; padding: 50px 20px 40px; border-bottom: 2px solid #0ff; margin-bottom: 40px;
+            background: rgba(0, 20, 40, 0.8); border-radius: 10px;
         }
         
         /* GLITCH TITLE */
         .glitch {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: clamp(60px, 15vw, 120px);
-            color: #0ff;
-            text-transform: uppercase;
-            position: relative;
-            text-shadow: 
-                0 0 10px rgba(0, 255, 255, 0.8),
-                0 0 20px rgba(0, 255, 255, 0.6),
-                0 0 30px rgba(0, 255, 255, 0.4);
-            animation: glitch-skew 3s ease-in-out infinite;
-            letter-spacing: 0.05em;
-            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: clamp(48px, 10vw, 72px);
+            color: #0ff; text-transform: uppercase; position: relative;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4);
+            animation: glitch-skew 3s ease-in-out infinite; letter-spacing: 0.05em; margin-bottom: 15px;
         }
         
-        .glitch::before,
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         }
         
         .glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 #f0f;
-            clip: rect(44px, 450px, 56px, 0);
+            left: 2px; text-shadow: -2px 0 #f0f; clip: rect(44px, 450px, 56px, 0);
             animation: glitch-anim 5s infinite linear alternate-reverse;
         }
         
         .glitch::after {
-            left: -2px;
-            text-shadow: -2px 0 #ff0;
-            clip: rect(44px, 450px, 56px, 0);
+            left: -2px; text-shadow: -2px 0 #ff0; clip: rect(44px, 450px, 56px, 0);
             animation: glitch-anim2 4s infinite linear alternate-reverse;
         }
         
@@ -215,130 +131,251 @@
             100% { transform: skew(0deg); }
         }
         
-        .subtitle {
-            font-size: clamp(18px, 3vw, 28px);
-            color: #f0f;
-            text-shadow: 0 0 10px rgba(255, 0, 255, 0.6);
-            margin-bottom: 15px;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 0.2em;
+        .status-bar {
+            display: flex; justify-content: center; gap: 30px; margin-top: 25px; flex-wrap: wrap;
+        }
+        .status-item {
+            padding: 12px 24px; border: 2px solid #0ff; border-radius: 8px;
+            background: rgba(0, 255, 255, 0.1); transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+        .status-item:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5); transform: translateY(-2px);
         }
         
-        .description {
-            font-size: clamp(16px, 2vw, 20px);
-            color: #0ff;
-            max-width: 700px;
-            margin: 30px auto;
-            line-height: 1.8;
+        /* CONTROL PANEL */
+        .controls {
+            display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center;
+            padding: 25px; background: rgba(0, 20, 40, 0.7); border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px; box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+        }
+        .scan-btn {
+            padding: 20px 60px; font-size: 22px; 
+            background: linear-gradient(135deg, #0ff, #f0f);
+            color: #000; border: none; border-radius: 10px; cursor: pointer;
+            font-weight: 900; transition: all 0.3s; text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em;
+            box-shadow: 0 6px 25px rgba(0, 255, 255, 0.5);
+            position: relative; overflow: hidden;
+        }
+        .scan-btn::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0; background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .scan-btn:hover::before {
+            width: 300px; height: 300px;
+        }
+        .scan-btn:hover {
+            transform: translateY(-3px); box-shadow: 0 10px 35px rgba(0, 255, 255, 0.7);
+        }
+        .scan-btn.scanning {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.98); }
         }
         
-        /* BUTTONS */
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            margin-top: 50px;
-            flex-wrap: wrap;
-            justify-content: center;
+        .filter-btn {
+            padding: 14px 28px; background: transparent; border: 2px solid #f0f;
+            color: #f0f; border-radius: 8px; cursor: pointer; transition: all 0.3s;
+            font-family: 'Space Mono', monospace; font-weight: 700; text-transform: uppercase;
+            font-size: 14px; letter-spacing: 0.05em;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
+        }
+        .filter-btn:hover {
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5); transform: translateY(-2px);
+        }
+        .filter-btn.active {
+            background: #f0f; color: #000; box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
         }
         
-        .btn {
-            padding: 20px 45px;
-            font-size: 18px;
-            font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            border: 3px solid #0ff;
-            background: transparent;
-            color: #0ff;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            position: relative;
-            overflow: hidden;
+        /* TOKEN GRID */
+        .token-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px; margin-top: 30px;
         }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: #0ff;
-            transition: left 0.3s;
-            z-index: -1;
+        .token-card {
+            border: 2px solid #0ff; border-radius: 12px; padding: 28px;
+            background: rgba(0, 20, 40, 0.95); transition: all 0.4s;
+            animation: slideIn 0.6s ease; position: relative; overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6);
         }
-        
-        .btn:hover::before {
-            left: 0;
+        .token-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.15), transparent);
+            transition: left 0.6s;
         }
-        
-        .btn:hover {
-            color: #000;
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.7);
-            transform: translateY(-3px);
+        .token-card:hover::before {
+            left: 100%;
         }
-        
-        .btn-secondary {
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .token-card:hover {
+            transform: translateY(-8px); box-shadow: 0 12px 45px rgba(0, 255, 255, 0.5);
             border-color: #f0f;
-            color: #f0f;
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+        .token-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 20px; border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 15px;
+        }
+        .token-name {
+            font-size: 26px; font-weight: 900; color: #0ff; font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+        }
+        .token-symbol {
+            color: #f0f; font-size: 13px; background: rgba(255, 0, 255, 0.25);
+            padding: 5px 12px; border-radius: 6px; margin-top: 8px; display: inline-block;
+            border: 1px solid #f0f; font-weight: 700; letter-spacing: 0.05em;
+        }
+        .token-score {
+            font-size: 36px; font-weight: 900; font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #0ff, #f0f, #ff0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+        }
+        .token-stats {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;
+        }
+        .stat {
+            display: flex; justify-content: space-between; padding: 12px 14px;
+            background: rgba(0, 255, 255, 0.05); border-radius: 6px;
+            border: 1px solid rgba(0, 255, 255, 0.2); transition: all 0.3s;
+        }
+        .stat:hover {
+            background: rgba(0, 255, 255, 0.12); border-color: rgba(0, 255, 255, 0.5);
+            transform: translateX(3px);
+        }
+        .stat-label { 
+            color: #888; font-size: 11px; text-transform: uppercase; 
+            letter-spacing: 0.08em; font-weight: 700;
+        }
+        .stat-value { 
+            color: #0ff; font-weight: 700; font-size: 15px; 
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
         }
         
-        .btn-secondary::before {
-            background: #f0f;
+        /* ANALYSIS LAYERS - SLEEK REDESIGN */
+        .analysis-layers {
+            margin-top: 22px; padding-top: 22px; border-top: 2px solid rgba(0, 255, 255, 0.3);
+        }
+        .layer {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px; padding: 10px 0; position: relative;
+        }
+        .layer-name { 
+            color: #0ff; font-size: 11px; text-transform: uppercase; 
+            font-weight: 700; min-width: 90px; letter-spacing: 0.08em;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+        .layer-bar-container {
+            flex: 1; margin: 0 16px; height: 10px; background: rgba(0, 20, 40, 0.8);
+            border-radius: 12px; overflow: hidden; position: relative;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .layer-fill {
+            height: 100%; 
+            background: linear-gradient(90deg, #f0f 0%, #0ff 50%, #ff0 100%);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+        }
+        .layer-fill::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent);
+            border-radius: 12px 12px 0 0;
+        }
+        .layer-fill::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: shimmer 2.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .layer-value { 
+            color: #ff0; font-weight: 700; min-width: 65px; text-align: right;
+            font-size: 14px; text-shadow: 0 0 8px rgba(255, 255, 0, 0.6);
         }
         
-        .btn-secondary:hover {
-            box-shadow: 0 0 40px rgba(255, 0, 255, 0.7);
+        .recommendation {
+            text-align: center; margin-top: 22px; padding: 16px;
+            border-radius: 10px; font-weight: 900; font-size: 18px;
+            font-family: 'Orbitron', sans-serif; text-transform: uppercase;
+            letter-spacing: 0.12em; transition: all 0.3s;
+            border: 2px solid;
+        }
+        .recommendation.hot { 
+            background: rgba(255, 100, 0, 0.25); color: #ff6400; border-color: #ff6400;
+            box-shadow: 0 0 25px rgba(255, 100, 0, 0.4);
+        }
+        .recommendation.watch { 
+            background: rgba(255, 255, 0, 0.25); color: #ffff00; border-color: #ffff00;
+            box-shadow: 0 0 25px rgba(255, 255, 0, 0.4);
+        }
+        .recommendation.risky { 
+            background: rgba(255, 0, 0, 0.25); color: #ff0000; border-color: #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
         }
         
-        /* FEATURES */
-        .features {
-            margin-top: 80px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            max-width: 1000px;
+        .token-links {
+            display: flex; gap: 12px; margin-top: 22px;
+        }
+        .token-link {
+            flex: 1; padding: 12px; text-align: center; background: rgba(0, 255, 255, 0.08);
+            border: 2px solid #0ff; border-radius: 8px; color: #0ff; text-decoration: none;
+            transition: all 0.3s; font-size: 12px; font-weight: 700; text-transform: uppercase;
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.2); letter-spacing: 0.05em;
+        }
+        .token-link:hover {
+            background: rgba(0, 255, 255, 0.25); box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+            transform: translateY(-3px); border-color: #f0f; color: #f0f;
         }
         
-        .feature {
-            background: rgba(0, 20, 40, 0.8);
-            border: 2px solid #0ff;
-            padding: 30px;
-            transition: all 0.3s;
+        /* NO DATA MESSAGE */
+        .no-data {
+            text-align: center; padding: 120px 20px; color: #888;
+        }
+        .no-data h3 {
+            font-size: 40px; color: #f0f; margin-bottom: 20px; font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 25px rgba(255, 0, 255, 0.6); font-weight: 900;
         }
         
-        .feature:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+        /* LOADING ANIMATION */
+        .loading {
+            display: none; text-align: center; padding: 70px;
+            background: rgba(0, 20, 40, 0.9); border: 2px solid #0ff; border-radius: 12px;
+            margin: 20px auto; max-width: 600px;
+            box-shadow: 0 10px 50px rgba(0, 255, 255, 0.3);
         }
-        
-        .feature h3 {
-            color: #0ff;
-            font-size: 20px;
-            margin-bottom: 15px;
-            font-family: 'Orbitron', sans-serif;
+        .loading.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-        
-        .feature p {
-            color: #0ff;
-            font-size: 14px;
-            line-height: 1.6;
-            opacity: 0.8;
+        .loading-spinner {
+            width: 90px; height: 90px; border: 5px solid rgba(0, 255, 255, 0.2);
+            border-top-color: #0ff; border-right-color: #f0f; border-radius: 50%; 
+            margin: 0 auto 25px; animation: spin 0.9s linear infinite;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         @media (max-width: 768px) {
-            .cta-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
+            .glitch { font-size: 48px; }
+            .token-grid { grid-template-columns: 1fr; }
+            .controls { flex-direction: column; }
+            .scan-btn, .filter-btn { width: 100%; }
+            .status-bar { gap: 15px; }
         }
     </style>
 </head>
@@ -353,53 +390,222 @@
         <div class="rectangle"></div>
         <div class="rectangle"></div>
     </div>
-    
-    <div class="container">
-        <h1 class="glitch" data-text="ALICE">ALICE</h1>
-        <div class="subtitle">SOLANA MICRO CAP SCANNER</div>
-        <p class="description">
-            10-layer AI analysis // Real-time token discovery<br>
-            Try ALICE for free or join the exclusive Telegram bot
-        </p>
-        
-        <div class="cta-buttons">
-            <a href="alice-scanner.html" class="btn">ACCESS ORACLE</a>
-            <a href="#telegram" class="btn btn-secondary">TELEGRAM BOT</a>
+
+    <!-- MAIN SCANNER -->
+    <div class="scanner-container">
+        <div class="header">
+            <h1 class="glitch" data-text="ALICE ORACLE">ALICE ORACLE</h1>
+            <p style="color: #f0f; font-size: 22px; font-family: 'Orbitron', sans-serif; letter-spacing: 0.2em; margin-top: 10px;">PUMP.FUN REAL-TIME SCANNER</p>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span style="color: #888; font-size: 12px; text-transform: uppercase;">TOKENS:</span>
+                    <span id="tokenCount" style="color: #0ff; font-weight: 700; margin-left: 10px; font-size: 16px;">0</span>
+                </div>
+                <div class="status-item">
+                    <span style="color: #888; font-size: 12px; text-transform: uppercase;">SOURCE:</span>
+                    <span id="dataSource" style="color: #0ff; font-weight: 700; margin-left: 10px; font-size: 14px;">PUMP.FUN API</span>
+                </div>
+                <div class="status-item">
+                    <span style="color: #888; font-size: 12px; text-transform: uppercase;">STATUS:</span>
+                    <span id="scanStatus" style="color: #0f0; font-weight: 700; margin-left: 10px; font-size: 14px;">READY</span>
+                </div>
+            </div>
         </div>
-        
-        <div class="features">
-            <div class="feature">
-                <h3>Public Scanner</h3>
-                <p>Try ALICE for free - scan live tokens under $50K FDV with 10-layer analysis</p>
-            </div>
-            <div class="feature">
-                <h3>10-Layer Analysis</h3>
-                <p>FDV, Age, Pump, Liquidity, Volume, Holders, Transactions, Momentum, Risk, Alpha</p>
-            </div>
-            <div class="feature">
-                <h3>Telegram Bot</h3>
-                <p>Hold 500,000 ALICE tokens to unlock exclusive bot access with instant signals</p>
-            </div>
-            <div class="feature">
-                <h3>Real-Time Data</h3>
-                <p>GMGN + Raydium integration - always updated with the latest micro caps</p>
+
+        <div class="controls">
+            <button class="scan-btn" id="scanBtn" onclick="performScan()">
+                SCAN NOW
+            </button>
+            <button class="filter-btn active" onclick="setFilter('all', this)">ALL</button>
+            <button class="filter-btn" onclick="setFilter('hot', this)">HOT</button>
+            <button class="filter-btn" onclick="setFilter('new', this)">NEW</button>
+            <button class="filter-btn" onclick="setFilter('pumping', this)">PUMPING</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p style="color: #0ff; font-size: 20px; font-weight: 700; margin-bottom: 12px; font-family: 'Orbitron', sans-serif;">Scanning Pump.fun tokens...</p>
+            <p style="color: #888; font-size: 15px;">Analyzing 10 layers of data</p>
+        </div>
+
+        <div class="token-grid" id="tokenGrid">
+            <div class="no-data">
+                <h3>No Tokens Scanned Yet</h3>
+                <p style="font-size: 18px; margin-top: 18px; color: #0ff;">Click "SCAN NOW" to discover the latest Pump.fun gems</p>
             </div>
         </div>
     </div>
-    
-    <section id="telegram" style="position: relative; z-index: 10; padding: 100px 20px; text-align: center;">
-        <h2 style="font-size: 48px; color: #f0f; margin-bottom: 30px; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px rgba(255, 0, 255, 0.6);">TELEGRAM BOT ACCESS</h2>
-        <p style="font-size: 20px; color: #0ff; max-width: 700px; margin: 0 auto 40px; line-height: 1.8;">
-            Hold 500,000 ALICE tokens to unlock the exclusive Telegram bot.<br>
-            Get instant signals, alerts, and deep analysis directly in Telegram.
-        </p>
-        <div style="background: rgba(0, 20, 40, 0.9); border: 3px solid #f0f; padding: 40px; max-width: 800px; margin: 0 auto;">
-            <div style="font-size: 14px; color: #ff0; margin-bottom: 20px; letter-spacing: 0.2em;">ALICE CONTRACT ADDRESS (SOLANA)</div>
-            <div style="font-family: 'Courier New', monospace; font-size: 16px; color: #0ff; word-break: break-all; padding: 20px; background: rgba(0, 255, 255, 0.05); border: 1px solid #0ff; cursor: pointer;" onclick="navigator.clipboard.writeText(this.textContent).then(() => alert('Contract address copied!'))">
-                JDoJRbxSkY2EZX36w4ZSfy5ajhmKELtNQvxdntqXpump
-            </div>
-            <p style="color: #ff0; margin-top: 30px; font-size: 14px;">Bot coming soon - Hold ALICE tokens to get early access!</p>
-        </div>
-    </section>
+
+    <script>
+        let currentTokens = [];
+        let currentFilter = 'all';
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8080/api/scan'
+            : '/api/scan';
+
+        // Auto-scan on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => performScan(), 500);
+        });
+
+        async function performScan() {
+            const scanBtn = document.getElementById('scanBtn');
+            const loading = document.getElementById('loading');
+            const tokenGrid = document.getElementById('tokenGrid');
+            const scanStatus = document.getElementById('scanStatus');
+
+            scanBtn.classList.add('scanning');
+            scanBtn.textContent = 'SCANNING...';
+            loading.classList.add('active');
+            tokenGrid.innerHTML = '';
+            scanStatus.textContent = 'SCANNING';
+            scanStatus.style.color = '#ff0';
+
+            try {
+                const response = await fetch(`${API_URL}?test=true`);
+                const data = await response.json();
+
+                if (data.success && data.tokens) {
+                    currentTokens = data.tokens;
+                    document.getElementById('tokenCount').textContent = data.tokens.length;
+                    displayTokens(currentTokens);
+                    scanStatus.textContent = 'COMPLETE';
+                    scanStatus.style.color = '#0f0';
+                } else {
+                    throw new Error(data.error || 'Failed to fetch tokens');
+                }
+            } catch (error) {
+                console.error('Scan error:', error);
+                tokenGrid.innerHTML = `
+                    <div class="no-data">
+                        <h3 style="color: #f00;">Scan Failed</h3>
+                        <p style="color: #ff0; font-size: 16px; margin-top: 15px;">${error.message}</p>
+                        <p style="margin-top: 20px; color: #888; font-size: 14px;">Make sure the server is running</p>
+                    </div>
+                `;
+                scanStatus.textContent = 'ERROR';
+                scanStatus.style.color = '#f00';
+            } finally {
+                scanBtn.classList.remove('scanning');
+                scanBtn.textContent = 'SCAN NOW';
+                loading.classList.remove('active');
+            }
+        }
+
+        function displayTokens(tokens) {
+            const grid = document.getElementById('tokenGrid');
+            
+            if (!tokens || tokens.length === 0) {
+                grid.innerHTML = '<div class="no-data"><h3>No tokens found</h3><p style="margin-top: 15px; font-size: 16px;">Try scanning again</p></div>';
+                return;
+            }
+
+            let filtered = tokens.slice();
+            if (currentFilter === 'hot') {
+                filtered = filtered.filter(t => (t.analysis?.recommendation || '').includes('HOT') || t.spiking);
+            } else if (currentFilter === 'new') {
+                filtered = filtered.filter(t => (t.age_minutes || 999) < 30);
+            } else if (currentFilter === 'pumping') {
+                filtered = filtered.filter(t => (t.pump_percent || 0) > 8);
+            }
+
+            grid.innerHTML = filtered.map(token => createTokenCard(token)).join('');
+        }
+
+        function createTokenCard(token) {
+            const rec = (token.analysis?.recommendation || 'WATCH');
+            const recClass = /HOT/.test(rec) ? 'hot' : /ACCUMULATE/.test(rec) ? 'watch' : /RISKY/.test(rec) ? 'risky' : 'watch';
+            const layers = (token.analysis?.layers || []).slice(0, 10).map(L => `
+                <div class="layer">
+                    <span class="layer-name">${escapeHtml(L.name)}</span>
+                    <div class="layer-bar-container">
+                        <div class="layer-fill" style="width:${Math.max(0, Math.min(100, L.score || 0))}%"></div>
+                    </div>
+                    <span class="layer-value">${L.value ?? ''}</span>
+                </div>
+            `).join('');
+
+            const fdvDisp = token.dex?.fdv ?? token.fdv;
+            const liqDisp = token.dex?.liquidityUsd ?? token.liquidity;
+            const volDisp = token.dex?.volume24h ?? token.volume_24h;
+
+            return `
+                <div class="token-card">
+                    <div class="token-header">
+                        <div>
+                            <div class="token-name">${escapeHtml(token.name || '—')}</div>
+                            <span class="token-symbol">${escapeHtml((token.symbol || '').toUpperCase())}</span>
+                        </div>
+                        <div class="token-score">${token.score ?? 0}</div>
+                    </div>
+                    
+                    <div class="token-stats">
+                        <div class="stat">
+                            <span class="stat-label">FDV</span>
+                            <span class="stat-value">${fdvDisp ? `$${Number(fdvDisp).toLocaleString()}` : '—'}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">AGE</span>
+                            <span class="stat-value">${token.age_minutes ?? '—'}m</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">BONDING</span>
+                            <span class="stat-value">${token.bonding_curve?.toFixed?.(1) || '—'}%</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">LIQUIDITY</span>
+                            <span class="stat-value">${liqDisp ? `$${Math.round(liqDisp).toLocaleString()}` : '—'}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">VOLUME 24h</span>
+                            <span class="stat-value">${volDisp ? `$${Math.round(volDisp).toLocaleString()}` : '—'}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">HOLDERS</span>
+                            <span class="stat-value">${token.holders ?? '—'}</span>
+                        </div>
+                    </div>
+
+                    <div class="analysis-layers">
+                        ${layers}
+                    </div>
+
+                    <div class="recommendation ${recClass}">
+                        ${rec}
+                    </div>
+
+                    <div class="token-links">
+                        <a href="https://pump.fun/${token.contract_address}" target="_blank" class="token-link">
+                            PUMP.FUN
+                        </a>
+                        <a href="https://birdeye.so/token/${token.contract_address}?chain=solana" target="_blank" class="token-link">
+                            BIRDEYE
+                        </a>
+                        <a href="https://dexscreener.com/solana/${token.contract_address}" target="_blank" class="token-link">
+                            DEXSCREENER
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+        }
+
+        function setFilter(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            displayTokens(currentTokens);
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            if (!document.getElementById('scanBtn').classList.contains('scanning')) {
+                performScan();
+            }
+        }, 30000);
+    </script>
 </body>
 </html>
